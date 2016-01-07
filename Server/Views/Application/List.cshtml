@@ -1,0 +1,18 @@
+﻿@{
+	ViewBag.Message = "Applications";
+}
+@using Server.Domain
+@model Server.ApplicationListModel
+<div>
+	<table class="table">
+		@foreach(Application application in Model.Applications) {
+			<tr>
+				<td style="width: 200px;">@application.Name</td>
+				<td style="width: 200px;">@application.Directory</td>
+				<td>@Html.ActionLink("Packages", "List", "Package", new { application = application.Name }, null)</td>
+			</tr>
+		}
+	</table>
+	@Html.ActionLink("Add", "Add", "Application")
+</div>
+

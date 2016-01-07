@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WKB Update Server</title>
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" type="text/css" />
+</head>
+	<body>
+		
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			@*<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar">kak</span>
+						<span class="icon-bar">pis</span>
+						<span class="icon-bar"></span>
+					</button>
+				</div>
+			</div>*@
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li><a href="/">Home</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					@if(Request.IsAuthenticated) {
+						<li><span class="navbar-text">Welcome @User.Identity.Name</span></li>
+						<li>@Html.ActionLink("Logout", "Logoff", "Account")</li>
+					} else {
+						<li>@Html.ActionLink("Login", "Login", "Account")</li>
+					}
+				</ul>
+			</div><!--/.nav-collapse -->
+		</nav>
+		<div class="container body-content">
+			<div></div>
+			<h3>@ViewBag.Message</h3>
+			@RenderBody()
+		</div>
+		<footer class="footer">
+			<div class="container">
+				<p class="text-muted">&copy; @DateTime.Now.Year - Wolters-Kluwer</p>
+			</div>
+		</footer>
+		<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+		<script src="~/Scripts/bootstrap.min.js"></script>
+	</body>
+</html>

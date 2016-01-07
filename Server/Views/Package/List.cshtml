@@ -1,0 +1,18 @@
+﻿@{
+	ViewBag.Message = "Packages";
+}
+@using Server.Domain
+@model Server.PackageListModel
+<div>
+	<table class="table">
+		@foreach(Package package in Model.Packages) {
+			<tr>
+				<td class="text-right">@package.Version</td>
+				<td class="text-right">@package.Timestamp.ToString("dd/MM/yyyy HH:mm")</td>
+				<td>@package.File</td>
+			</tr>
+		}
+	</table>
+	@Html.ActionLink("Add", "Add", "Package", new { application = Model.Application}, null)
+</div>
+

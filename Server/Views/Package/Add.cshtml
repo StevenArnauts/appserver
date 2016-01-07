@@ -1,0 +1,16 @@
+﻿@{
+	ViewBag.Message = "Add Package to " + @Model.Application;
+}
+
+@model Server.PackageAddModel
+
+@using(Html.BeginForm("Add", "Package", FormMethod.Post, new Dictionary<string, object> { { "enctype", "multipart/form-data" } })) {
+	@Html.HiddenFor(m => m.Application)
+	<div class="form-group">
+		<label>File</label>
+		@Html.TextBoxFor(m => m.File, new { type = "file", @class = "form-control" })
+	</div>
+	<button type="submit" class="btn btn-default">Add</button>
+}
+
+

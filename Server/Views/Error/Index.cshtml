@@ -1,0 +1,15 @@
+﻿@{
+	ViewBag.Message = "Error";
+}
+
+@model Server.ErrorModel
+
+@using(Html.BeginForm("Index", "Error")) {
+	<div>
+		<p>@Model.Type</p>
+		<p>@Model.Message</p>
+		<p>@Html.Raw(@Model.StackTrace)</p>
+	</div>
+}
+
+

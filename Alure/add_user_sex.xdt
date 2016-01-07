@@ -1,0 +1,5 @@
+﻿<settings xmlns="http://www.kluwer.be/applications/alure" xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+	<user>
+		<sex xdt:Transform="Insert">male</sex>
+	</user>
+</settings>

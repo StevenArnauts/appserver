@@ -1,0 +1,3 @@
+﻿<package xmlns="http://www.wkb.be/etnia/appserver/package">
+	<config>user.config</config>
+</package>
