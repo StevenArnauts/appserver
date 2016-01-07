@@ -45,7 +45,7 @@ namespace Core.Contract {
 		/// Gets the base folder where applications are installed on the server
 		/// </summary>
 		public string AppFolder {
-			get { return (this._server.AppFolder); }
+			get { return (this._server.RootFolder); }
 		}
 
 		public string HandleMessage(Message message) {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Core.Contract;
+using Core.Persistence;
 using Utilities;
 
 namespace Core {
@@ -19,10 +19,12 @@ namespace Core {
 
 		private AppDomain _appDomain;
 		private Runner _runner;
-		private DeploymentInfo _deployment;
+		private Deployment _deployment;
 		private readonly Server _server;
+		private readonly IApplicationRepository _packageRepository;
 
-		internal Application(string name, Server server) {
+		internal Application(string name, Server server, IApplicationRepository packageRepository) {
+			this._packageRepository = packageRepository;
 			this._server = server;
 			this._name = name;
 		}
@@ -47,7 +49,7 @@ namespace Core {
 		}
 
 		public string CurrentVersion {
-			get { return this._deployment == null ? null : this._deployment.PackageInfo.Bootstrapper.Assembly.Version; }
+			get { return this._deployment == null ? null : this._deployment.PackageContent.Bootstrapper.Assembly.Version; }
 		}
 
 		public Task Deploy(Package package) {
@@ -55,17 +57,22 @@ namespace Core {
 				lock(this._lock) {
 					Logger.Info(this, "Deploying package from " + package.Source + "...");
 					this._deployment = this.PrepareDeployment(package);
-					this._deployment.BinFolder = Path.Combine(this._context.AppFolder, this.Name, "bin", this._deployment.PackageInfo.Bootstrapper.Assembly.Version);
+					this._deployment.BinFolder = Path.Combine(this._context.AppFolder, this.Name, "bin", this._deployment.PackageContent.Bootstrapper.Assembly.Version);
 					this._deployment.SettingsFolder = Path.Combine(this._context.AppFolder, this.Name, "conf");
 					package.Deploy(this._deployment);
 					this.Load();
-					foreach(Contract.Type updaterInfo in this._deployment.PackageInfo.Updaters) {
+					foreach(Type updaterInfo in this._deployment.PackageContent.Updaters) {
 						try {
 							Updater updater = this.CreateInstance<Updater>(this._appDomain, updaterInfo);
 							updater.Run(this._context);
 						} catch(Exception ex) {
 							Logger.Error("Failed to run updater " + updaterInfo.FullName + " because: " + ex.GetRootCause().Message);
 						}
+					}
+					string deploymentInfoPath = Path.Combine(this._deployment.BinFolder, "deployment.info");
+					using(FileStream stream = File.Create(deploymentInfoPath)) {
+						XmlSerializer.Serialize(this._deployment, stream, new NamespaceMapping { Prefix = "", Namespace = Serialization.NAMESPACE });
+                        Logger.Info(this, "Saved deployment info to " + deploymentInfoPath);
 					}
 					Logger.Info(this, "Package deployed");
 				}
@@ -75,15 +82,15 @@ namespace Core {
 		public Task Unload() {
 			return (this._server.Run(() => {
 				int attempt = 0;
-				const int ATTEMPTS = 10;
+				const int attempts = 10;
 				if (this._appDomain == null) {
 					Logger.Warn(this, "Appdomain is null");
 					return;
 				}
-				while (attempt <= ATTEMPTS) {
+				while (attempt <= attempts) {
 					try {
 						attempt++;
-						Logger.Info(this, "Unloading, attempt " + attempt + " of " + ATTEMPTS + "...");
+						Logger.Info(this, "Unloading, attempt " + attempt + " of " + attempts + "...");
 						AppDomain.Unload(this._appDomain);
 						break;
 					} catch (CannotUnloadAppDomainException) {
@@ -104,7 +111,7 @@ namespace Core {
 				lock (this._lock) {
 					Logger.Info(this, "Starting...");
 					if (this._runner == null) throw new Exception("Bootstrapper not set");
-					this._runner.Initialize(this._context, this._deployment.PackageInfo.Bootstrapper);
+					this._runner.Initialize(this._context, this._deployment.PackageContent.Bootstrapper);
 					this._runner.Start();
 					Logger.Info(this, "Started");
 				}
@@ -131,18 +138,18 @@ namespace Core {
 
 		private void Load() {
 			Logger.Info(this, "Loading...");
-			AppDomain appDomain = Utilities.AppDomainManager.LoadAppDomain(this._deployment.BinFolder, this._deployment.PackageInfo.Bootstrapper.Assembly.File);
-			this._runner = this.CreateInstance<Runner>(appDomain, Contract.Type.FromType(typeof(Runner)));
+			AppDomain appDomain = Utilities.AppDomainManager.LoadAppDomain(this._deployment.BinFolder, this._deployment.PackageContent.Bootstrapper.Assembly.File);
+			this._runner = this.CreateInstance<Runner>(appDomain, Type.FromType(typeof(Runner)));
 			this._appDomain = appDomain;
 			Logger.Info(this, "Loaded");
 		}
 
-		private DeploymentInfo PrepareDeployment(Package package) {
-			DeploymentInfo info = new DeploymentInfo { PackageInfo = package.ExtractPackageInfo(this._context.GetTempPath()) };
+		private Deployment PrepareDeployment(Package package) {
+			Deployment info = new Deployment { PackageContent = this._packageRepository.ExtractPackageInfo(package) };
 			return ( info );
 		}
 
-		private TInstance CreateInstance<TInstance>(AppDomain appDomain, Contract.Type type) where TInstance : class {
+		private TInstance CreateInstance<TInstance>(AppDomain appDomain, Type type) where TInstance : class {
 			string file = type.Assembly.File;
 			if(file == null) throw new ArgumentException("Type must include assembly location");
 			object proxy = RemoteObjectFactory.Create(appDomain, type, null);

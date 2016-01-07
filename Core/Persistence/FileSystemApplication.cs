@@ -1,6 +1,6 @@
-namespace Server.Domain {
+namespace Core.Persistence {
 
-	public class Application {
+	public class FileSystemApplication {
 
 		public string Name { get; set; }
 		public string Directory { get; set; }

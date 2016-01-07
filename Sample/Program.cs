@@ -29,7 +29,7 @@ namespace Sample {
 				PackageWatcher alureWatcher = new PackageWatcher(@"..\..\Alure", "alure.zip", alure);
 				alureWatcher.Start();
 
-				ServerWatcher briljantPoller = new ServerWatcher(new Uri("https://localhost:44300"), briljant);
+				ServerWatcher briljantPoller = new ServerWatcher(new Uri("https://localhost:44300"), briljant, TimeSpan.FromSeconds(10));
 				briljantPoller.Start();
 
 				Console.WriteLine("Press <ENTER> to stop...");

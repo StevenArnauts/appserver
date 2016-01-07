@@ -164,7 +164,6 @@
     <Compile Include="Configuration\ConfigFileConfigurationProvider.cs" />
     <Compile Include="Configuration\ContainerConfig.cs" />
     <Compile Include="Configuration\IConfigurationProvider.cs" />
-    <Compile Include="Configuration\IRepositoryConfiguration.cs" />
     <Compile Include="Configuration\IServiceConfiguration.cs" />
     <Compile Include="Configuration\MapperConfig.cs" />
     <Compile Include="Configuration\RepositoryConfigurationElement.cs" />
@@ -184,10 +183,6 @@
     <Compile Include="Controllers\PackagesApiController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\ApplicationAddModel.cs" />
-    <Compile Include="Domain\Application.cs" />
-    <Compile Include="Domain\IPackageRepository.cs" />
-    <Compile Include="Domain\Package.cs" />
-    <Compile Include="Domain\PackageRepository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

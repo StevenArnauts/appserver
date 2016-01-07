@@ -20,7 +20,7 @@ namespace Tests {
 		[TestMethod]
 		public void ShouldSerialize() {
 			Manifest sut = new Manifest { ConfigurationFile = "settings.xml" };
-			string xml = XmlSerializer.Serialize(sut, new NamespaceMapping { Prefix = "", Namespace = Manifest.NAMESPACE });
+			string xml = XmlSerializer.Serialize(sut, new NamespaceMapping { Prefix = "", Namespace = Serialization.NAMESPACE });
 			Assert.IsFalse(string.IsNullOrEmpty(xml));
 		}
 

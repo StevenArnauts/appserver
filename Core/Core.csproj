@@ -57,17 +57,22 @@
   <ItemGroup>
     <Compile Include="Contract\IBootstrapper.cs" />
     <Compile Include="Infrastructure\ReflectionHelper.cs" />
+    <Compile Include="Persistence\FileSystemApplication.cs" />
+    <Compile Include="Persistence\FileSystemPackage.cs" />
+    <Compile Include="Persistence\IApplicationRepository.cs" />
+    <Compile Include="Persistence\FileSystemRepository.cs" />
     <Compile Include="Server\AppServerException.cs" />
+    <Compile Include="Persistence\IApplicationRepositoryConfiguration.cs" />
     <Compile Include="Server\ProcessManager.cs" />
     <Compile Include="Server\Runner.cs" />
     <Compile Include="Infrastructure\SameThreadTaskScheduler.cs" />
     <Compile Include="Watchers\ApiMessageHandler.cs" />
     <Compile Include="Server\Application.cs" />
-    <Compile Include="Contract\Assembly.cs" />
-    <Compile Include="Contract\DeploymentInfo.cs" />
+    <Compile Include="Server\Assembly.cs" />
+    <Compile Include="Server\Deployment.cs" />
     <Compile Include="Contract\Updater.cs" />
     <Compile Include="Server\Manifest.cs" />
-    <Compile Include="Contract\Package.cs" />
+    <Compile Include="Server\PackageContent.cs" />
     <Compile Include="Server\BytePackage.cs" />
     <Compile Include="Contract\Context.cs" />
     <Compile Include="Server\FilePackage.cs" />
@@ -82,7 +87,7 @@
     <Compile Include="Infrastructure\RemoteObjectFactory.cs" />
     <Compile Include="Watchers\ServerWatcher.cs" />
     <Compile Include="Infrastructure\SponsorshipManager.cs" />
-    <Compile Include="Contract\Type.cs" />
+    <Compile Include="Server\Type.cs" />
     <Compile Include="Watchers\Watcher.cs" />
     <Compile Include="Watchers\Update.cs" />
   </ItemGroup>

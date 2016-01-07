@@ -1,11 +1,12 @@
 ﻿@{
 	ViewBag.Message = "Applications";
 }
-@using Server.Domain
+
+@using Core.Persistence
 @model Server.ApplicationListModel
 <div>
 	<table class="table">
-		@foreach(Application application in Model.Applications) {
+		@foreach(FileSystemApplication application in Model.Applications) {
 			<tr>
 				<td style="width: 200px;">@application.Name</td>
 				<td style="width: 200px;">@application.Directory</td>

@@ -2,51 +2,62 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Core.Contract;
+using Core.Persistence;
 using Utilities;
 
 namespace Core {
 
 	/// <summary>
 	/// Manages one or more applications in their own <seealso cref="AppDomain"/>.
-	/// Applications are bundled in a <see cref="Package"/>, like a .jar file in Java.
+	/// Applications are bundled in a <see cref="Package"/>, much like a .jar file in Java.
 	/// </summary>
 	public class Server : MarshalByRefObject, IDisposable {
 
 		private const string DEFAULT_APP_FOLDER = @".\apps";
 
 		private readonly List<Application> _applications = new List<Application>();
-		private readonly string _appFolder;
-		private readonly string _tempFolder;
-
-		private bool _disposed;
 		private readonly SameThreadTaskScheduler _scheduler;
+		private readonly IApplicationRepository _repository;
+		private bool _disposed;
 
 		public static Server Create(string appFolder = null, string tempFolder = null) {
 			string root = Path.GetFullPath(appFolder ?? DEFAULT_APP_FOLDER);
-			if (!Directory.Exists(root)) Directory.CreateDirectory(root);
 			string temp = Path.GetFullPath(tempFolder ?? Path.Combine(Path.GetTempPath(), "Kluwer", "Install"));
 			Server server = new Server(root, temp);
 			return (server);
 		}
 
-		public string AppFolder {
-			get { return (this._appFolder); }
+		/// <summary>
+		/// Loads the last deployed version of all applications.
+		/// </summary>
+		public void LoadExistingApplication() {
+			
+		}
+
+		/// <summary>
+		/// Gets the folder where applications are deployed
+		/// </summary>
+		public string RootFolder {
+			get { return (this._repository.RootFolder); }
 		}
 
 		public string TempFolder {
-			get { return ( this._tempFolder ); }
+			get { return ( this._repository.TempFolder ); }
 		}
 
 		private Server(string appFolder, string tempFolder) {
-			this._appFolder = appFolder;
-			this._tempFolder = tempFolder;
+			this._repository = new FileSystemRepository(new FileSystemRepositoryConfiguration(appFolder, tempFolder));
 			this._scheduler = new SameThreadTaskScheduler("AppServer");
 			Logger.Info(this, "Created, app folder = " + appFolder + ", temp folder = " + tempFolder);
 		}
 
+		/// <summary>
+		/// Queues and runs the action on the same thread this server was created on.
+		/// </summary>
+		/// <param name="action"></param>
+		/// <returns></returns>
 		public Task Run(Action action) {
 			Task task = new Task(action);
 			task.Start(this._scheduler);
@@ -55,7 +66,7 @@ namespace Core {
 
 		public Application CreateApplication(string name) {
 			if(this._applications.Any(a => a.Name == name)) throw new Exception("Application '" + name + "' is already registered");
-			Application application = new Application(name, this);
+			Application application = new Application(name, this, this._repository);
 			application.Init(new Context(application, this));
 			this._applications.Add(application);
 			Logger.Info(this, "Registered application " + name);

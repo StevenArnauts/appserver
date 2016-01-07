@@ -1,9 +1,12 @@
-﻿namespace Server {
+﻿using Core.Persistence;
+
+namespace Server {
 
 	public interface IConfigurationProvider {
 
-		IRepositoryConfiguration Repository { get; }
+		IApplicationRepositoryConfiguration Repository { get; }
 		IServiceConfiguration Service { get; }
+		IAuthenticationConfiguration Authentication { get; }
 
 	}
 

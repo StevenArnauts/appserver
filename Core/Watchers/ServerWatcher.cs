@@ -8,8 +8,10 @@ namespace Core {
 
 		private readonly Proxy _proxy;
 		private Thread _worker;
+		private readonly TimeSpan _interval;
 
-		public ServerWatcher(Uri uri, Application application) : base(application) {
+		public ServerWatcher(Uri uri, Application application, TimeSpan interval) : base(application) {
+			this._interval = interval;
 			this._proxy = new Proxy(uri);
 			Logger.Info(this, "Using URL " + uri.AbsoluteUri + " for application " + application.Name);
 		}
@@ -46,14 +48,14 @@ namespace Core {
 					break;
 				} catch (Exception ex) {
 					Logger.Error("Polling failed: " + ex.GetRootCause().Message);
-					Pauze();
 				} 
 			}
 			Logger.Info(this, "Stopped");
 		}
 
-		private static void Pauze() {
-			Thread.Sleep(TimeSpan.FromSeconds(10));
+		private void Pauze() {
+			Logger.Debug(this, "Waiting " + this._interval + " before checking again...");
+			Thread.Sleep(this._interval);
 		}
 
 		public void Reset() {

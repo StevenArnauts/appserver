@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 using Core;
-using Server.Domain;
+using Core.Persistence;
 using Utilities;
 using Utilities.MVC;
 using Utilities.WebApi;
@@ -10,9 +10,9 @@ namespace Server {
 	[HandleErrors]
 	public class PackageController : BaseController {
 
-		private readonly IPackageRepository _repository;
+		private readonly IApplicationRepository _repository;
 
-		public PackageController(IPackageRepository repository) {
+		public PackageController(IApplicationRepository repository) {
 			this._repository = repository;
 		}
 
@@ -20,11 +20,12 @@ namespace Server {
 		[ActionName("List")]
 		[HttpGet]
 		public ActionResult List(string application) {
-			Domain.Application app = this._repository.GetApplication(application);
+			FileSystemApplication app = this._repository.GetApplication(application);
 			PackageListModel model = new PackageListModel { Packages = this._repository.GetPackages(app), Application = application };
 			return View("List", model);
 		}
 
+		[Authorize]
 		[Trace]
 		[ActionName("Add")]
 		[HttpGet]
@@ -34,6 +35,7 @@ namespace Server {
 			return View("Add", model);
 		}
 
+		[Authorize]
 		[Trace]
 		[ActionName("Add")]
 		[HttpPost]
@@ -41,8 +43,8 @@ namespace Server {
 			if(model.File != null && model.File.ContentLength > 0) {
 				Logger.Info(this, "Received package upload " + model.File.FileName);
 				Core.Package package = BytePackage.Create(model.File.InputStream.ReadAllBytes(), model.File.FileName);
-				Domain.Application application = this._repository.GetApplication(model.Application);
-				this._repository.CreatePackage(application, package);
+				FileSystemApplication fileSystemApplication = this._repository.GetApplication(model.Application);
+				this._repository.CreatePackage(fileSystemApplication, package);
 			}
 			return this.RedirectToAction("List", new { application = model.Application });
 		}

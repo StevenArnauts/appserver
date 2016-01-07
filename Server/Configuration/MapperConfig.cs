@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Core.Persistence;
 
 namespace Server {
 
@@ -7,8 +8,8 @@ namespace Server {
 		public static void Load() {
 
 			// outgoing
-			Mapper.CreateMap<Domain.Application, Application>();
-			Mapper.CreateMap<Domain.Package, Package>().ForMember(d => d.Version, o => o.MapFrom(s => s.Version.ToString(4)));
+			Mapper.CreateMap<FileSystemApplication, Application>();
+			Mapper.CreateMap<FileSystemPackage, Package>().ForMember(d => d.Version, o => o.MapFrom(s => s.Version.ToString(4)));
 
 		}
 

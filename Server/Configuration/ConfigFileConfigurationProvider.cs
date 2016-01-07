@@ -1,4 +1,6 @@
-﻿namespace Server {
+﻿using Core.Persistence;
+
+namespace Server {
 
 	public class ConfigFileConfigurationProvider : IConfigurationProvider {
 
@@ -6,7 +8,7 @@
 			get { return (ServerConfigurationSection.Current.Service); }
 		}
 
-		public IRepositoryConfiguration Repository {
+		public IApplicationRepositoryConfiguration Repository {
 			get { return ( ServerConfigurationSection.Current.Repository ); }
 		}
 

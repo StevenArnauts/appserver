@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace Server.Domain {
+namespace Core.Persistence {
 
-	public class Package {
+	public class FileSystemPackage {
 
-		public Application Application { get; set; }
+		public FileSystemApplication Application { get; set; }
 		public Version Version { get; set; }
 		public DateTime Timestamp { get; set; }
 		public string Directory { get; set; }

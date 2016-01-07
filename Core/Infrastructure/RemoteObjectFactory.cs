@@ -11,7 +11,7 @@ namespace Core {
 			get { return (sponsorshipManager); }
 		}
 
-		public static object Create(AppDomain appDomain, Contract.Type type, object[] parameters) {
+		public static object Create(AppDomain appDomain, Type type, object[] parameters) {
 			var proxy = ReflectionHelper.Instantiate(appDomain, type, parameters);
 			MarshalByRefObject handle = proxy as MarshalByRefObject;
 			if(handle == null) throw new Exception("Type " + type.FullName + " must be a " + typeof(MarshalByRefObject).FullName);

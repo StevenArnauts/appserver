@@ -4,7 +4,7 @@ using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
-using Server.Domain;
+using Core.Persistence;
 using Utilities;
 
 namespace Server {
@@ -21,10 +21,10 @@ namespace Server {
 
 			ConfigFileConfigurationProvider configurationProvider = new ConfigFileConfigurationProvider();
 			builder.RegisterInstance(configurationProvider.Service).As<IServiceConfiguration>();
-			builder.RegisterInstance(configurationProvider.Repository).As<IRepositoryConfiguration>();
+			builder.RegisterInstance(configurationProvider.Repository).As<IApplicationRepositoryConfiguration>();
 			builder.RegisterInstance(configurationProvider.Authentication).As<IAuthenticationConfiguration>();
 
-			builder.RegisterType<PackageRepository>().As<IPackageRepository>();
+			builder.RegisterType<FileSystemRepository>().As<IApplicationRepository>();
 
 			builder.RegisterType<SystemDateTimeFactory>().As<IDateTimeFactory>();
 

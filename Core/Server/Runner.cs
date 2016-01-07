@@ -21,7 +21,7 @@ namespace Core {
 		/// <summary>
 		/// Creates the <see cref="Contract.IBootstrapper"/> instance.
 		/// </summary>
-		public void Initialize(Context context, Contract.Type bootstrapperType) {
+		public void Initialize(Context context, Type bootstrapperType) {
 			Logger.Initialize("log4net.config");
 			Logger.Info(this, "Initializing " + bootstrapperType.FullName + "...");
 			object instance = ReflectionHelper.Instantiate(AppDomain.CurrentDomain, bootstrapperType, null);

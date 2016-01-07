@@ -1,14 +1,14 @@
 ﻿using System.Web.Mvc;
-using Server.Domain;
+using Core.Persistence;
 using Utilities.MVC;
 
 namespace Server {
 
 	public class ApplicationController : BaseController {
 
-		private readonly IPackageRepository _repository;
+		private readonly IApplicationRepository _repository;
 
-		public ApplicationController(IPackageRepository repository) {
+		public ApplicationController(IApplicationRepository repository) {
 			this._repository = repository;
 		}
 

@@ -22,7 +22,7 @@
 	</system.web.webPages.razor>
 
 	<server>
-		<authentication userid="cloudbox" password="SterkWerk1" />
+		<authentication userid="admin" password="admin" />
 		<service port="6162" />
 		<repository rootFolder="C:\Temp\Kluwer\Updates\Applications" tempFolder="C:\Temp\Kluwer\Updates\Temp" />
 	</server>
