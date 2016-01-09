@@ -32,8 +32,23 @@ namespace Core {
 		/// <summary>
 		/// Loads the last deployed version of all applications.
 		/// </summary>
-		public void LoadExistingApplication() {
-			
+		public IEnumerable<Application> Load() {
+			List<Application> applications = new List<Application>();
+			foreach (FileSystemApplication application in this._repository.GetApplications()) {
+				Logger.Info(this, "Loading existing application " + application.Name + "...");
+				List<FileSystemPackage> packages = this._repository.GetPackages(application).ToList();
+				if (!packages.Any()) {
+					Logger.Info(this, "Application " + application.Name + " does not have any packages deployed");
+					continue;
+				}
+				FileSystemPackage latest = packages.Last();
+				Logger.Info(this, "Application " + application.Name + " latest package = " + latest.Version.ToString(4));
+				Application app = this.CreateApplication(application.Name);
+				app.LoadFrom(latest.Directory);
+				app.Init(new Context(app, this));
+				applications.Add(app);
+			}
+			return (applications);
 		}
 
 		/// <summary>
@@ -71,6 +86,11 @@ namespace Core {
 			this._applications.Add(application);
 			Logger.Info(this, "Registered application " + name);
 			return (application);
+		}
+
+		public bool TryGetApplication(string name, out Application application) {
+			application = this._applications.FirstOrDefault(a => a.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+			return (application != null);
 		}
 
 		public void Stop() {

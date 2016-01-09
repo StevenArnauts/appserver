@@ -1,11 +1,11 @@
 ﻿@{
 	ViewBag.Message = "Packages";
 }
-@using Core.Persistence
+@using Server.Persistence
 @model Server.PackageListModel
 <div>
 	<table class="table">
-		@foreach(FileSystemPackage package in Model.Packages) {
+		@foreach(Package package in Model.Packages) {
 			<tr>
 				<td class="text-right">@package.Version</td>
 				<td class="text-right">@package.Timestamp.ToString("dd/MM/yyyy HH:mm")</td>

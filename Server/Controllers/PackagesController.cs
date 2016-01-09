@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 using Core;
-using Core.Persistence;
+using Server.Persistence;
 using Utilities;
 using Utilities.MVC;
 using Utilities.WebApi;
@@ -20,9 +20,9 @@ namespace Server {
 		[ActionName("List")]
 		[HttpGet]
 		public ActionResult List(string application) {
-			FileSystemApplication app = this._repository.GetApplication(application);
+			Persistence.Application app = this._repository.GetApplication(application);
 			PackageListModel model = new PackageListModel { Packages = this._repository.GetPackages(app), Application = application };
-			return View("List", model);
+			return this.View("List", model);
 		}
 
 		[Authorize]
@@ -32,7 +32,7 @@ namespace Server {
 		public ActionResult Add(string application) {
 			PackageAddModel model = new PackageAddModel();
 			model.Application = application;
-			return View("Add", model);
+			return this.View("Add", model);
 		}
 
 		[Authorize]
@@ -43,7 +43,7 @@ namespace Server {
 			if(model.File != null && model.File.ContentLength > 0) {
 				Logger.Info(this, "Received package upload " + model.File.FileName);
 				Core.Package package = BytePackage.Create(model.File.InputStream.ReadAllBytes(), model.File.FileName);
-				FileSystemApplication fileSystemApplication = this._repository.GetApplication(model.Application);
+				Persistence.Application fileSystemApplication = this._repository.GetApplication(model.Application);
 				this._repository.CreatePackage(fileSystemApplication, package);
 			}
 			return this.RedirectToAction("List", new { application = model.Application });

@@ -166,7 +166,7 @@
     <Compile Include="Configuration\IConfigurationProvider.cs" />
     <Compile Include="Configuration\IServiceConfiguration.cs" />
     <Compile Include="Configuration\MapperConfig.cs" />
-    <Compile Include="Configuration\RepositoryConfigurationElement.cs" />
+    <Compile Include="Configuration\ApplicationRepositoryConfigurationElement.cs" />
     <Compile Include="Configuration\ServiceConfigurationElement.cs" />
     <Compile Include="Configuration\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -186,11 +186,16 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Persistence\Application.cs" />
+    <Compile Include="Persistence\Package.cs" />
+    <Compile Include="Persistence\FileSystemApplicationRepository.cs" />
+    <Compile Include="Persistence\IApplicationRepository.cs" />
+    <Compile Include="Persistence\IApplicationRepositoryConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">
-      <Project>{6AEEDAB9-0B11-4189-804C-FC19CEBD187D}</Project>
+      <Project>{6aeedab9-0b11-4189-804c-fc19cebd187d}</Project>
       <Name>Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utiltities\Utilities.csproj">

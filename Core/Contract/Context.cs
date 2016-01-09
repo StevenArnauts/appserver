@@ -7,6 +7,7 @@ namespace Core.Contract {
 	/// <summary>
 	/// Mechanism to allow the host application to receive messages from the guest applications.
 	/// This object always lives in the app domain of the server.
+	/// TODO [SAR] make this serializable?
 	/// </summary>
 	public class Context : MarshalByRefObject {
 

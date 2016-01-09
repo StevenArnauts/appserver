@@ -52,31 +52,65 @@ namespace Core {
 			get { return this._deployment == null ? null : this._deployment.PackageContent.Bootstrapper.Assembly.Version; }
 		}
 
+		/// <summary>
+		/// Alternative to deploying a package is to start an application from a know deployed location.
+		/// </summary>
+		public void LoadFrom(string directory) {
+			string deploymentInfoPath = Path.Combine(directory, "deployment.info");
+			if(File.Exists(deploymentInfoPath)) {
+				using(FileStream stream = File.Open(deploymentInfoPath, FileMode.Open, FileAccess.Read)) {
+					Deployment deployment = XmlSerializer.Deserialize<Deployment>(stream);
+					this._deployment = deployment;
+					Logger.Info(this, "Loaded deployment info from " + deploymentInfoPath);
+					this.Load();
+				}
+			} else {
+				throw new ApplicationLoadException("Unable to find deployment info, application could not be loaded");
+			}
+		}
+
+		/// <summary>
+		/// The physical moving of files in a <see cref="Package"/> to a location from where they can be executed.
+		/// </summary>
+		/// <param name="package"></param>
+		/// <returns></returns>
 		public Task Deploy(Package package) {
 			return (this._server.Run(() => {
+				// TODO [SAR] potential dead lock with the server action queue, is this lock required?
 				lock(this._lock) {
 					Logger.Info(this, "Deploying package from " + package.Source + "...");
-					this._deployment = this.PrepareDeployment(package);
+					this._deployment = new Deployment { PackageContent = this._packageRepository.ExtractPackageInfo(package) };
 					this._deployment.BinFolder = Path.Combine(this._context.AppFolder, this.Name, "bin", this._deployment.PackageContent.Bootstrapper.Assembly.Version);
 					this._deployment.SettingsFolder = Path.Combine(this._context.AppFolder, this.Name, "conf");
 					package.Deploy(this._deployment);
-					this.Load();
-					foreach(Type updaterInfo in this._deployment.PackageContent.Updaters) {
-						try {
-							Updater updater = this.CreateInstance<Updater>(this._appDomain, updaterInfo);
-							updater.Run(this._context);
-						} catch(Exception ex) {
-							Logger.Error("Failed to run updater " + updaterInfo.FullName + " because: " + ex.GetRootCause().Message);
-						}
-					}
 					string deploymentInfoPath = Path.Combine(this._deployment.BinFolder, "deployment.info");
 					using(FileStream stream = File.Create(deploymentInfoPath)) {
 						XmlSerializer.Serialize(this._deployment, stream, new NamespaceMapping { Prefix = "", Namespace = Serialization.NAMESPACE });
                         Logger.Info(this, "Saved deployment info to " + deploymentInfoPath);
 					}
+					this.RunUpdates();
 					Logger.Info(this, "Package deployed");
 				}
 			}));
+		}
+
+		private void RunUpdates() {
+			try {
+				this.Load();
+				foreach (Type updaterInfo in this._deployment.PackageContent.Updaters) {
+					try {
+						Updater updater = this.CreateInstance<Updater>(this._appDomain, updaterInfo);
+						updater.Run(this._context);
+					} catch (Exception ex) {
+						Logger.Error("Failed to run updater " + updaterInfo.FullName + " because: " + ex.GetRootCause().Message);
+					}
+				}
+			} catch (Exception ex) {
+				Logger.Warn(this, "Failed to run updaters: " + ex.Message);
+				throw;
+			} finally {
+				//this.Unload();
+			}
 		}
 
 		public Task Unload() {
@@ -84,7 +118,7 @@ namespace Core {
 				int attempt = 0;
 				const int attempts = 10;
 				if (this._appDomain == null) {
-					Logger.Warn(this, "Appdomain is null");
+					Logger.Warn(this, "Unloaded already");
 					return;
 				}
 				while (attempt <= attempts) {
@@ -144,11 +178,6 @@ namespace Core {
 			Logger.Info(this, "Loaded");
 		}
 
-		private Deployment PrepareDeployment(Package package) {
-			Deployment info = new Deployment { PackageContent = this._packageRepository.ExtractPackageInfo(package) };
-			return ( info );
-		}
-
 		private TInstance CreateInstance<TInstance>(AppDomain appDomain, Type type) where TInstance : class {
 			string file = type.Assembly.File;
 			if(file == null) throw new ArgumentException("Type must include assembly location");
@@ -158,7 +187,7 @@ namespace Core {
 			Logger.Info(this, "Created instance of " + type.FullName + " from " + file + " in app domain " + appDomain.FriendlyName);
 			return (instance);
 		}
-	
+
 	}
 
 }

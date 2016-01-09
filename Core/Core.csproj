@@ -63,6 +63,7 @@
     <Compile Include="Persistence\FileSystemRepository.cs" />
     <Compile Include="Server\AppServerException.cs" />
     <Compile Include="Persistence\IApplicationRepositoryConfiguration.cs" />
+    <Compile Include="Server\ArchivePackage.cs" />
     <Compile Include="Server\ProcessManager.cs" />
     <Compile Include="Server\Runner.cs" />
     <Compile Include="Infrastructure\SameThreadTaskScheduler.cs" />

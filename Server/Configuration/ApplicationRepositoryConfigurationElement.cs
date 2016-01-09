@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Configuration;
-using Core.Persistence;
+using Server.Persistence;
 using Utilities;
 
 namespace Server {
 
 	[Serializable]
-	public class RepositoryConfigurationElement : ConfigurationElementBase, IApplicationRepositoryConfiguration {
+	public class ApplicationRepositoryConfigurationElement : ConfigurationElementBase, IApplicationRepositoryConfiguration {
 
 		private const string KEY_ROOT_FOLDER = "rootFolder";
 		private const string KEY_TEMP_FOLDER = "tempFolder";

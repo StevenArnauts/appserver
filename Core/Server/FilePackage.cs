@@ -3,7 +3,10 @@ using Utilities;
 
 namespace Core {
 
-	public class FilePackage : Package {
+	/// <summary>
+	/// A package that is a .zip file on the file system.
+	/// </summary>
+	public class FilePackage : ArchivePackage {
 
 		private string _path;
 

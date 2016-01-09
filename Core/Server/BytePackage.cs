@@ -3,7 +3,7 @@ using Utilities;
 
 namespace Core {
 
-	public class BytePackage : Package {
+	public class BytePackage : ArchivePackage {
 
 		private byte[] _bytes;
 

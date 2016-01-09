@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using Core.Persistence;
+using Server.Persistence;
 
 namespace Server {
 
 	public class PackageListModel {
 
 		public string Application { get; set; }
-		public IEnumerable<FileSystemPackage> Packages { get; set; }
+		public IEnumerable<Persistence.Package> Packages { get; set; }
 
 	}
 

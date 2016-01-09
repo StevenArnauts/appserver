@@ -1,4 +1,4 @@
-﻿using Core.Persistence;
+﻿using Server.Persistence;
 
 namespace Server {
 
@@ -9,7 +9,7 @@ namespace Server {
 		}
 
 		public IApplicationRepositoryConfiguration Repository {
-			get { return ( ServerConfigurationSection.Current.Repository ); }
+			get { return ( ServerConfigurationSection.Current.ApplicationRepository ); }
 		}
 
 		public IAuthenticationConfiguration Authentication {

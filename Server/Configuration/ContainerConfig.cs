@@ -4,7 +4,7 @@ using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
-using Core.Persistence;
+using Server.Persistence;
 using Utilities;
 
 namespace Server {
@@ -24,7 +24,7 @@ namespace Server {
 			builder.RegisterInstance(configurationProvider.Repository).As<IApplicationRepositoryConfiguration>();
 			builder.RegisterInstance(configurationProvider.Authentication).As<IAuthenticationConfiguration>();
 
-			builder.RegisterType<FileSystemRepository>().As<IApplicationRepository>();
+			builder.RegisterType<FileSystemApplicationRepository>().As<IApplicationRepository>();
 
 			builder.RegisterType<SystemDateTimeFactory>().As<IDateTimeFactory>();
 

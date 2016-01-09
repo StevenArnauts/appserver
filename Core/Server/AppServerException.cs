@@ -9,4 +9,11 @@ namespace Core {
 
 	}
 
+	public class ApplicationLoadException : ApplicationException {
+
+		public ApplicationLoadException(string message) : base(message) { }
+		public ApplicationLoadException(string message, Exception inner) : base(message, inner) { }
+
+	}
+
 }

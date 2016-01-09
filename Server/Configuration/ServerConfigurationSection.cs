@@ -13,9 +13,9 @@ namespace Server {
 		}
 
 		[ConfigurationProperty(REPOSITORY_SECTION_NAME)]
-		public RepositoryConfigurationElement Repository {
+		public ApplicationRepositoryConfigurationElement ApplicationRepository {
 			get {
-				RepositoryConfigurationElement element = (RepositoryConfigurationElement)base[REPOSITORY_SECTION_NAME];
+				ApplicationRepositoryConfigurationElement element = (ApplicationRepositoryConfigurationElement)base[REPOSITORY_SECTION_NAME];
 				return element;
 			}
 		}

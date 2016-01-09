@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Core;
 using Utilities;
 
@@ -13,18 +14,31 @@ namespace Sample {
 				Logger.Info(typeof(Program), "Started");
 
 				Server server = Server.Create(@".\apps", @".\temp");
-				
-				Application briljant = server.CreateApplication("Briljant");
-				briljant.Deploy(FilePackage.Open(@"..\..\Briljant\briljant.zip")).Wait();
-				briljant.Start();
+				IEnumerable<Application> existingApplications = server.Load();
+				foreach (Application existing in existingApplications) {
+					existing.Start();
+				}
 
-				Application alure = server.CreateApplication("Alure");
-				alure.Deploy(FilePackage.Open(@"..\..\Alure\alure.zip"));
-				alure.Start();
+				Application briljant;
+				if (!server.TryGetApplication("Briljant", out briljant)) {
+                    briljant = server.CreateApplication("Briljant");
+					briljant.Deploy(FilePackage.Open(@"..\..\Briljant\briljant.zip")).Wait();
+					briljant.Start();
+				}
 
-				Application cloudbox = server.CreateApplication("Cloudbox");
-				cloudbox.Deploy(FilePackage.Open(@"..\..\Cloudbox\cloudbox.zip"));
-				cloudbox.Start();
+				Application alure;
+				if (!server.TryGetApplication("Alure", out alure)) {
+					alure = server.CreateApplication("Alure");
+					alure.Deploy(FilePackage.Open(@"..\..\Alure\alure.zip"));
+					alure.Start();
+				}
+
+				Application cloudbox;
+				if (!server.TryGetApplication("Cloudbox", out cloudbox)) {
+					cloudbox = server.CreateApplication("Cloudbox");
+					cloudbox.Deploy(FilePackage.Open(@"..\..\Cloudbox\cloudbox.zip"));
+					cloudbox.Start();
+				}
 
 				PackageWatcher alureWatcher = new PackageWatcher(@"..\..\Alure", "alure.zip", alure);
 				alureWatcher.Start();

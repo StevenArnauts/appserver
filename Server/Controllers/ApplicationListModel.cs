@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using Core.Persistence;
+using Server.Persistence;
 
 namespace Server {
 
 	public class ApplicationListModel {
 
-		public IEnumerable<FileSystemApplication> Applications { get; set; }
+		public IEnumerable<Persistence.Application> Applications { get; set; }
 
 	}
 

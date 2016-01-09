@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
 using AutoMapper;
-using Core.Persistence;
+using Server.Persistence;
 using Utilities.WebApi;
 
 namespace Server {
@@ -31,22 +31,22 @@ namespace Server {
 		[HttpGet]
 		[Route("api/applications/{name}/packages")]
 		public IEnumerable<Package> GetPackages(string name, [ModelBinder(typeof(VersionModelBinder))] Version since = null) {
-			FileSystemApplication fileSystemApplication = this._packageRepository.GetApplication(name);
+			Persistence.Application fileSystemApplication = this._packageRepository.GetApplication(name);
 			return (this._packageRepository.GetPackages(fileSystemApplication, since).Select(Mapper.Map<Package>));
 		}
 
 		[HttpGet]
 		[Route("api/applications/{name}/packages/{version}")]
 		public Package GetPackage(string name, [ModelBinder(typeof(VersionModelBinder))] Version version) {
-			FileSystemApplication fileSystemApplication = this._packageRepository.GetApplication(name);
+			Persistence.Application fileSystemApplication = this._packageRepository.GetApplication(name);
 			return (Mapper.Map<Package>(this._packageRepository.GetPackage(fileSystemApplication, version)));
 		}
 
 		[HttpGet]
 		[Route("api/applications/{name}/packages/{version}/bytes")]
 		public HttpResponseMessage GetBytes(string name, [ModelBinder(typeof(VersionModelBinder))] Version version) {
-			FileSystemApplication fileSystemApplication = this._packageRepository.GetApplication(name);
-			FileSystemPackage package = this._packageRepository.GetPackage(fileSystemApplication, version);
+			Persistence.Application fileSystemApplication = this._packageRepository.GetApplication(name);
+			Persistence.Package package = this._packageRepository.GetPackage(fileSystemApplication, version);
 			HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK) {
 				Content = new StreamContent(this._packageRepository.GetPackage(package))
 			};
