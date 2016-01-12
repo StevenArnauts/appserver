@@ -59,6 +59,7 @@
     <Compile Include="Infrastructure\ReflectionHelper.cs" />
     <Compile Include="Persistence\FileSystemApplication.cs" />
     <Compile Include="Persistence\FileSystemPackage.cs" />
+    <Compile Include="Persistence\FileSystemRepositoryConfiguration.cs" />
     <Compile Include="Persistence\IApplicationRepository.cs" />
     <Compile Include="Persistence\FileSystemRepository.cs" />
     <Compile Include="Server\AppServerException.cs" />

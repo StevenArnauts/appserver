@@ -6,26 +6,6 @@ using Utilities;
 
 namespace Core.Persistence {
 
-	public class FileSystemRepositoryConfiguration : IApplicationRepositoryConfiguration {
-
-		private readonly string _rootFolder;
-		private readonly string _tempFolder;
-
-		public FileSystemRepositoryConfiguration(string rootFolder, string tempFolder) {
-			this._rootFolder = rootFolder;
-			this._tempFolder = tempFolder;
-		}
-
-		public string RootFolder {
-			get { return this._rootFolder; }
-		}
-
-		public string TempFolder {
-			get { return this._tempFolder; }
-		}
-
-	}
-
 	public class FileSystemRepository : IApplicationRepository {
 
 		private readonly string _rootFolder;
@@ -47,13 +27,6 @@ namespace Core.Persistence {
 			get { return this._tempFolder; }
 		}
 
-		public FileSystemApplication CreateApplication(string name) {
-			string path = Path.Combine(this._rootFolder, name);
-			if(Directory.Exists(path)) throw new InvalidOperationException("Application " + name + " already exists");
-			Directory.CreateDirectory(path);
-			return (new FileSystemApplication { Name = name, Directory = path });
-		}
-
 		public IEnumerable<FileSystemApplication> GetApplications() {
 			return (Directory.GetDirectories(this._rootFolder).Select(d => new FileSystemApplication { Name = Path.GetFileName(d), Directory = Path.GetFullPath(d) }));
 		}
@@ -62,25 +35,6 @@ namespace Core.Persistence {
 			string directory = Path.Combine(this._rootFolder, name);
 			if (!Directory.Exists(directory)) throw new ObjectNotFoundException("Application " + name + " does not exist");
 			return (new FileSystemApplication { Name = name, Directory = directory });
-		}
-
-		public FileSystemPackage CreatePackage(FileSystemApplication application, Package source) {
-			IEnumerable<FileSystemPackage> existingPackages = this.GetPackages(application);
-			PackageContent packageContentInfo;
-			try {
-				 packageContentInfo = this.ExtractPackageInfo(source);
-			} catch (AppServerException ex) {
-				Logger.Warn(this, ex, "Unable to extract package info");
-				throw new InvalidOperationException(ex.Message);
-			}
-			FileSystemPackage package = new FileSystemPackage { Version = Version.Parse(packageContentInfo.Bootstrapper.Assembly.Version) };
-			Logger.Info(this, "Detected package version = " + package.Version);
-			if(existingPackages.Any(p => p.Version == package.Version)) throw new InvalidOperationException("Application " + application.Name + " already has a package with version " + package.Version.ToString(4));
-			package.Application = application;
-			package.File = Path.Combine(this._rootFolder, application.Name, package.Version.ToString(4), source.Source);
-			package.Directory = Path.GetDirectoryName(package.File);
-			source.SaveAs(package.File);
-			return (package);
 		}
 
 		public IEnumerable<FileSystemPackage> GetPackages(FileSystemApplication application, Version since = null) {
@@ -98,12 +52,7 @@ namespace Core.Persistence {
 						Directory = Path.GetFullPath(packageFolder),
 						Application = application
 					};
-					string file = Directory.GetFiles(packageFolder, "deployment.info").FirstOrDefault();
-					if(!string.IsNullOrEmpty(file)) {
-						package.Timestamp = File.GetLastWriteTime(file);
-						package.File = file;
-						packages.Add(package);
-					}
+					packages.Add(package);
 				}
 			}
 			return (packages.OrderBy(p => p.Version));
@@ -123,15 +72,24 @@ namespace Core.Persistence {
 			throw new ObjectNotFoundException("Package version " + version + " does not exist for application " + application.Name);
 		}
 
-		public Stream GetPackage(FileSystemPackage package) {
-			if(string.IsNullOrEmpty(package.File)) throw new ObjectNotFoundException("Package file not found for " + package.Application.Name + " " + package.Version);
-			return (File.OpenRead(package.File));
+		public PackageContent ExtractPackageInfo(Package package) {
+			PackageContent packageContent = null;
+            string tempPath = Path.Combine(this._tempFolder, Guid.NewGuid().ToString("N").ToUpper());
+			try {
+				package.Extract(tempPath);
+				packageContent = this.ExtractPackageInfo(tempPath);
+			} finally {
+				try {
+					Directory.Delete(tempPath, true);
+				} catch(Exception ex) {
+					Logger.Warn(this, "Failed to remove temp folder " + tempPath + ": " + ex.Message);
+				}
+			}
+			return (packageContent);
 		}
 
-		public PackageContent ExtractPackageInfo(Package package) {
-			string tempPath = Path.Combine(this._tempFolder, Guid.NewGuid().ToString("N").ToUpper());
-			package.Extract(tempPath);
-			AppDomain tempDomain = Utilities.AppDomainManager.LoadAppDomain(tempPath, new Uri(this.GetType().Assembly.CodeBase).LocalPath);
+		public PackageContent ExtractPackageInfo(string directory) {
+			AppDomain tempDomain = Utilities.AppDomainManager.LoadAppDomain(directory, new Uri(this.GetType().Assembly.CodeBase).LocalPath);
 			try {
 				object handle;
 				try {
@@ -143,7 +101,7 @@ namespace Core.Persistence {
 				if(scanner == null) throw new Exception("Could not load package scanner");
 				PackageContent info = scanner.Run();
 				Logger.Info(this, "Scanner found " + info.Bootstrappers.Count + " bootstrapper(s) and " + info.Updaters.Count + " updater(s)");
-				string manifestFile = Path.Combine(tempPath, "manifest.xml");
+				string manifestFile = Path.Combine(directory, "manifest.xml");
 				if(File.Exists(manifestFile)) {
 					Logger.Debug(this, "Loading package manifest " + manifestFile + "...");
 					try {
@@ -160,11 +118,6 @@ namespace Core.Persistence {
 				return (info);
 			} finally {
 				AppDomain.Unload(tempDomain);
-				try {
-					Directory.Delete(tempPath, true);
-				} catch(Exception ex) {
-					Logger.Warn(this, "Failed to remove temp folder " + tempPath + ": " + ex.Message);
-				}
 			}
 		}
 

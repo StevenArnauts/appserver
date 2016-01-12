@@ -56,17 +56,21 @@ namespace Core {
 		/// Alternative to deploying a package is to start an application from a know deployed location.
 		/// </summary>
 		public void LoadFrom(string directory) {
+			Logger.Info(this, "Loading from directory " + directory + "...");
 			string deploymentInfoPath = Path.Combine(directory, "deployment.info");
 			if(File.Exists(deploymentInfoPath)) {
 				using(FileStream stream = File.Open(deploymentInfoPath, FileMode.Open, FileAccess.Read)) {
 					Deployment deployment = XmlSerializer.Deserialize<Deployment>(stream);
 					this._deployment = deployment;
 					Logger.Info(this, "Loaded deployment info from " + deploymentInfoPath);
-					this.Load();
 				}
 			} else {
-				throw new ApplicationLoadException("Unable to find deployment info, application could not be loaded");
+				this._deployment = new Deployment { PackageContent = this._packageRepository.ExtractPackageInfo(directory) };
+				this._deployment.BinFolder = Path.Combine(this._context.AppFolder, this.Name, "bin", this._deployment.PackageContent.Bootstrapper.Assembly.Version);
+				this._deployment.SettingsFolder = Path.Combine(this._context.AppFolder, this.Name, "conf");
+				this._deployment.SettingsPath = Path.Combine(this._deployment.SettingsFolder, this._deployment.PackageContent.Manifest.ConfigurationFile);
 			}
+			this.Load();
 		}
 
 		/// <summary>
