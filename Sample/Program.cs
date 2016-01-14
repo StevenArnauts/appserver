@@ -13,7 +13,7 @@ namespace Sample {
 				Logger.Initialize("log4net.config");
 				Logger.Info(typeof(Program), "Started");
 
-				Server server = Server.Create(@".\apps", @".\temp");
+				Server server = Server.Create(new AppDomainHostingModel(), @".\apps", @".\temp");
 				IEnumerable<Application> existingApplications = server.Load();
 				foreach (Application existing in existingApplications) {
 					existing.Start();

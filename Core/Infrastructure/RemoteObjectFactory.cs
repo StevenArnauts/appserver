@@ -1,5 +1,4 @@
 using System;
-using Core.Infrastructure;
 
 namespace Core {
 
@@ -11,12 +10,12 @@ namespace Core {
 			get { return (sponsorshipManager); }
 		}
 
-		public static object Create(AppDomain appDomain, Type type, object[] parameters) {
-			var proxy = ReflectionHelper.Instantiate(appDomain, type, parameters);
-			MarshalByRefObject handle = proxy as MarshalByRefObject;
-			if(handle == null) throw new Exception("Type " + type.FullName + " must be a " + typeof(MarshalByRefObject).FullName);
-			sponsorshipManager.Register(handle);
-			return ( proxy );
+		/// <summary>
+		/// Creates an <see cref="System.Runtime.Remoting.Lifetime.ISponsor"/> for the target, which will keep the remote object connected and safe from garbage collection.
+		/// </summary>
+		/// <param name="target"></param>
+		public static void Sponsor(MarshalByRefObject target) {
+			sponsorshipManager.Register(target);
 		}
 
 	}

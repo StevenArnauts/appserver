@@ -24,9 +24,7 @@ namespace Core {
 		public void Initialize(Context context, Type bootstrapperType) {
 			Logger.Initialize("log4net.config");
 			Logger.Info(this, "Initializing " + bootstrapperType.FullName + "...");
-			object instance = ReflectionHelper.Instantiate(AppDomain.CurrentDomain, bootstrapperType, null);
-			this._bootstrapper = instance as IBootstrapper;
-			if(this._bootstrapper == null) throw new Exception("Bootstrapper type " + bootstrapperType.FullName + " does not implement " + typeof(IBootstrapper).FullName);
+			this._bootstrapper = ReflectionHelper.CreateInstance<IBootstrapper>(AppDomain.CurrentDomain, bootstrapperType);
 			this._bootstrapper.Initialize(context);
 			Logger.Info(this, "Initialized " + bootstrapperType.FullName);
 		}

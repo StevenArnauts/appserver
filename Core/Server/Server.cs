@@ -21,12 +21,20 @@ namespace Core {
 		private readonly SameThreadTaskScheduler _scheduler;
 		private readonly IApplicationRepository _repository;
 		private bool _disposed;
+		private readonly HostingModel _hostingModel;
 
-		public static Server Create(string appFolder = null, string tempFolder = null) {
+		public static Server Create(HostingModel hostingModel, string appFolder = null, string tempFolder = null) {
 			string root = Path.GetFullPath(appFolder ?? DEFAULT_APP_FOLDER);
 			string temp = Path.GetFullPath(tempFolder ?? Path.Combine(Path.GetTempPath(), "Kluwer", "Install"));
-			Server server = new Server(root, temp);
+			Server server = new Server(hostingModel, root, temp);
 			return (server);
+		}
+
+		private Server(HostingModel hostingModel, string appFolder, string tempFolder) {
+			this._hostingModel = hostingModel;
+			this._repository = new FileSystemRepository(new FileSystemRepositoryConfiguration(appFolder, tempFolder));
+			this._scheduler = new SameThreadTaskScheduler("AppServer");
+			Logger.Info(this, "Created, app folder = " + appFolder + ", temp folder = " + tempFolder + ", hosting model = " + this._hostingModel.GetType().FullName);
 		}
 
 		/// <summary>
@@ -62,12 +70,6 @@ namespace Core {
 			get { return ( this._repository.TempFolder ); }
 		}
 
-		private Server(string appFolder, string tempFolder) {
-			this._repository = new FileSystemRepository(new FileSystemRepositoryConfiguration(appFolder, tempFolder));
-			this._scheduler = new SameThreadTaskScheduler("AppServer");
-			Logger.Info(this, "Created, app folder = " + appFolder + ", temp folder = " + tempFolder);
-		}
-
 		/// <summary>
 		/// Queues and runs the action on the same thread this server was created on.
 		/// </summary>
@@ -81,7 +83,7 @@ namespace Core {
 
 		public Application CreateApplication(string name) {
 			if(this._applications.Any(a => a.Name == name)) throw new Exception("Application '" + name + "' is already registered");
-			Application application = new Application(name, this, this._repository);
+			Application application = new Application(name, this, this._repository, this._hostingModel);
 			application.Init(new Context(application, this));
 			this._applications.Add(application);
 			Logger.Info(this, "Registered application " + name);

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Core.Infrastructure;
 using Utilities;
 
 namespace Core.Persistence {
@@ -91,7 +92,7 @@ namespace Core.Persistence {
 		}
 
 		public PackageContent ExtractPackageInfo(string directory) {
-			AppDomain tempDomain = Utilities.AppDomainManager.LoadAppDomain(directory, new Uri(this.GetType().Assembly.CodeBase).LocalPath);
+			AppDomain tempDomain = ReflectionHelper.LoadAppDomain(directory, new Uri(this.GetType().Assembly.CodeBase).LocalPath);
 			try {
 				object handle;
 				try {
