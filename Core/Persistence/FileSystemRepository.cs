@@ -16,7 +16,9 @@ namespace Core.Persistence {
 		/// </summary>
 		public FileSystemRepository(IApplicationRepositoryConfiguration config) {
 			this._rootFolder = Path.IsPathRooted(config.RootFolder) ? config.RootFolder : Path.GetFullPath(config.RootFolder);
+			if (!Directory.Exists(this._rootFolder)) Directory.CreateDirectory(this._rootFolder);
 			this._tempFolder = Path.IsPathRooted(config.TempFolder) ? config.TempFolder : Path.GetFullPath(config.TempFolder);
+			if(!Directory.Exists(this._tempFolder)) Directory.CreateDirectory(this._tempFolder);
 		}
 
 		public string RootFolder {
