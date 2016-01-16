@@ -11,6 +11,13 @@
     <AssemblyName>Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AssemblyInfoFilePath>Properties\AssemblyInfo.cs</AssemblyInfoFilePath>
+    <UpdateAssemblyVersion>True</UpdateAssemblyVersion>
+    <UpdateAssemblyFileVersion>True</UpdateAssemblyFileVersion>
+    <UpdateAssemblyInfoVersion>True</UpdateAssemblyInfoVersion>
+    <AssemblyVersionSettings>None.Increment.None.None</AssemblyVersionSettings>
+    <AssemblyFileVersionSettings>None.Increment.None.None</AssemblyFileVersionSettings>
+    <AssemblyInfoVersionSettings>None.Increment.None.None</AssemblyInfoVersionSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,6 +55,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -59,6 +67,7 @@
     <Compile Include="Hosting\AppDomainApplicationHost.cs" />
     <Compile Include="Hosting\AppDomainHostingModel.cs" />
     <Compile Include="Hosting\HostingModel.cs" />
+    <Compile Include="Infrastructure\IPHelper.cs" />
     <Compile Include="Hosting\ProcessApplicationHost.cs" />
     <Compile Include="Hosting\ProcessHostingModel.cs" />
     <Compile Include="Infrastructure\ReflectionHelper.cs" />
@@ -71,9 +80,9 @@
     <Compile Include="Server\AppServerException.cs" />
     <Compile Include="Persistence\IApplicationRepositoryConfiguration.cs" />
     <Compile Include="Server\ArchivePackage.cs" />
-    <Compile Include="Server\ProcessManager.cs" />
     <Compile Include="Server\Runner.cs" />
     <Compile Include="Infrastructure\SameThreadTaskScheduler.cs" />
+    <Compile Include="Server\ServerFactory.cs" />
     <Compile Include="Watchers\ApiMessageHandler.cs" />
     <Compile Include="Server\Application.cs" />
     <Compile Include="Server\Assembly.cs" />
@@ -100,6 +109,10 @@
     <Compile Include="Watchers\Update.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Host\Host.csproj">
+      <Project>{745cf4f9-50cc-4eb1-8f42-d86bc74e3e62}</Project>
+      <Name>Host</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Utiltities\Utilities.csproj">
       <Project>{F3576572-2E76-45C5-A73C-AC10519BF07F}</Project>
       <Name>Utilities</Name>

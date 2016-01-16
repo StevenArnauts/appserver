@@ -5,6 +5,11 @@ namespace Utilities {
 
 	public static class AssemblyExtensions {
 
+		/// <summary>
+		/// Returns the file name of the assembly
+		/// </summary>
+		/// <param name="source"></param>
+		/// <returns></returns>
 		public static string Path(this Assembly source) {
 			return (System.IO.Path.GetFileName(new Uri(source.CodeBase).LocalPath));
 		}

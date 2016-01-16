@@ -5,9 +5,8 @@ namespace Core {
 	public class AppDomainHostingModel : HostingModel {
 
 		internal override ApplicationHost Create(string binFolder, string assembly) {
-			Logger.Info(this, "Loading...");
 			AppDomainApplicationHost host = new AppDomainApplicationHost(binFolder, assembly);
-			Logger.Info(this, "Loaded");
+			Logger.Info(this, "Created new " + host.GetType().FullName);
 			return (host);
 		}
 

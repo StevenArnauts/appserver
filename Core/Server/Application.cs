@@ -163,13 +163,8 @@ namespace Core {
 		private void Load() {
 			Logger.Info(this, "Loading...");
 			this._applicationHost = this._hostingModel.Create(this._deployment.BinFolder, this._deployment.PackageContent.Bootstrapper.Assembly.File);
-			//AppDomain appDomain = Utilities.AppDomainManager.LoadAppDomain(this._deployment.BinFolder, this._deployment.PackageContent.Bootstrapper.Assembly.File);
-			//this._runner = CreateInstance<Runner>(appDomain, Type.FromType(typeof(Runner)));
-			//this._appDomain = appDomain;
 			Logger.Info(this, "Loaded");
 		}
-
-		
 
 	}
 

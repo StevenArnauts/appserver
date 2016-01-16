@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Contract;
@@ -15,22 +14,13 @@ namespace Core {
 	/// </summary>
 	public class Server : MarshalByRefObject, IDisposable {
 
-		private const string DEFAULT_APP_FOLDER = @".\apps";
-
 		private readonly List<Application> _applications = new List<Application>();
 		private readonly SameThreadTaskScheduler _scheduler;
 		private readonly IApplicationRepository _repository;
 		private bool _disposed;
 		private readonly HostingModel _hostingModel;
-
-		public static Server Create(HostingModel hostingModel, string appFolder = null, string tempFolder = null) {
-			string root = Path.GetFullPath(appFolder ?? DEFAULT_APP_FOLDER);
-			string temp = Path.GetFullPath(tempFolder ?? Path.Combine(Path.GetTempPath(), "Kluwer", "Install"));
-			Server server = new Server(hostingModel, root, temp);
-			return (server);
-		}
-
-		private Server(HostingModel hostingModel, string appFolder, string tempFolder) {
+		
+		internal Server(HostingModel hostingModel, string appFolder, string tempFolder) {
 			this._hostingModel = hostingModel;
 			this._repository = new FileSystemRepository(new FileSystemRepositoryConfiguration(appFolder, tempFolder));
 			this._scheduler = new SameThreadTaskScheduler("AppServer");

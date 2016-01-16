@@ -1,6 +1,4 @@
-﻿using System;
-using Core.Contract;
-using Utilities;
+﻿using Core.Contract;
 
 namespace Core {
 
@@ -10,9 +8,6 @@ namespace Core {
 		internal abstract void Start();
 		internal abstract void Stop();
 		internal abstract void Destroy();
-
-	
-
 
 	}
 
