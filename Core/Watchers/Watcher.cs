@@ -19,7 +19,7 @@ namespace Core {
 			this._application.Stop().Wait();
 			this._application.Unload().Wait();
 			this._application.Deploy(package).Wait();
-			this._application.Start().Wait();
+			this._application.ReStart().Wait();
 			Logger.Info(this, "Update complete");
 		}
 

@@ -10,14 +10,14 @@ namespace Alure {
 
 	public class Bootstrapper : IBootstrapper {
 
-		private Context _context;
+		private ServerContext _context;
 
 		public Bootstrapper() {
 			Logger.Initialize("log4net.config");
 			Logger.Info(this, "Created");
 		}
 
-		public void Initialize(Context context) {
+		public void Initialize(ServerContext context) {
 			this._context = context;
 			Logger.Info(this, "Initialized in app domain " + AppDomain.CurrentDomain.FriendlyName + ", my version is " + this.GetType().Assembly.GetName().Version);
 		}

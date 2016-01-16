@@ -18,8 +18,8 @@ namespace Core {
 				try {
 					System.Reflection.Assembly assembly = System.Reflection.Assembly.LoadFrom(file);
 					foreach (System.Type type in assembly.GetExportedTypes()) {
-						if (type != typeof (IBootstrapper) && typeof (IBootstrapper).IsAssignableFrom(type)) result.Bootstrappers.Add(Type.FromType(type));
-						if (type != typeof (Updater) && typeof (Updater).IsAssignableFrom(type)) result.Updaters.Add(Type.FromType(type));
+						if (type != typeof (IBootstrapper) && typeof (IBootstrapper).IsAssignableFrom(type)) result.Bootstrappers.Add(Contract.Type.FromType(type));
+						if (type != typeof (Updater) && typeof (Updater).IsAssignableFrom(type)) result.Updaters.Add(Contract.Type.FromType(type));
 					}
 				} catch (Exception ex) {
 					Logger.Warn(this, "Could not scan " + file + " because: " + ex.GetRootCause().Message);

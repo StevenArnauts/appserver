@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
 using System.Threading.Tasks;
 using Core.Contract;
 using Core.Infrastructure;
@@ -7,6 +9,8 @@ using Core.Persistence;
 using Utilities;
 
 namespace Core {
+
+
 
 	/// <summary>
 	/// The "logical" application
@@ -17,19 +21,19 @@ namespace Core {
 		private readonly string _name;
 		private readonly Server _server;
 		private readonly IApplicationRepository _packageRepository;
-		private Context _context;
+		private ServerContext _context;
 		private Deployment _deployment;
-		private readonly HostingModel _hostingModel;
-		private ApplicationHost _applicationHost;
+		private readonly IHostingModel _hostingModel;
+		private IApplicationHost _applicationHost;
 
-		internal Application(string name, Server server, IApplicationRepository packageRepository, HostingModel hostingModel) {
+		internal Application(string name, Server server, IApplicationRepository packageRepository, IHostingModel hostingModel) {
 			this._hostingModel = hostingModel;
 			this._packageRepository = packageRepository;
 			this._server = server;
 			this._name = name;
 		}
 
-		internal void Init(Context context) {
+		internal void Init(ServerContext context) {
 			this._context = context;
 		}
 
@@ -103,7 +107,7 @@ namespace Core {
 			AppDomain appDomain = null;
             try {
 				appDomain = ReflectionHelper.LoadAppDomain(this._deployment.BinFolder, this._deployment.PackageContent.Bootstrapper.Assembly.File);
-				foreach(Type updaterInfo in this._deployment.PackageContent.Updaters) {
+				foreach(Contract.Type updaterInfo in this._deployment.PackageContent.Updaters) {
 					try {
 						Updater updater = ReflectionHelper.CreateInstance<Updater>(appDomain, updaterInfo);
 						updater.Run(this._context);
@@ -136,6 +140,19 @@ namespace Core {
 					Logger.Info(this, "Starting...");
 					if (this._applicationHost == null) throw new Exception("Bootstrapper not set");
 					this._applicationHost.Initialize(this._context, this._deployment.PackageContent.Bootstrapper);
+					Thread.Sleep(TimeSpan.FromSeconds(1));
+					this._applicationHost.Start();
+					Logger.Info(this, "Started");
+				}
+			}));
+		}
+
+		public Task ReStart() {
+			return (this._server.Run(() => {
+				lock (this._lock) {
+					Logger.Info(this, "Starting...");
+					if(this._applicationHost == null) throw new Exception("Bootstrapper not set");
+					this._applicationHost.Initialize(this._context, this._deployment.PackageContent.Bootstrapper);
 					this._applicationHost.Start();
 					Logger.Info(this, "Started");
 				}
@@ -165,6 +182,48 @@ namespace Core {
 			this._applicationHost = this._hostingModel.Create(this._deployment.BinFolder, this._deployment.PackageContent.Bootstrapper.Assembly.File);
 			Logger.Info(this, "Loaded");
 		}
+
+		//private object _state;
+
+		//private object LoadState() {
+		//	return (this._state);
+		//}
+
+		//private void SaveState(object state) {
+		//	this._state = state;
+		//}
+
+		//private object LoadState() {
+		//	try {
+		//		Logger.Info(this, "Loading application state from " + this.StatePath + "...");
+		//		if (!File.Exists(this.StatePath)) {
+		//			Logger.Warn(this, "Application state could not be found");
+		//			return (null);
+		//		}
+		//		BinaryFormatter formatter = new BinaryFormatter();
+		//		return (formatter.Deserialize(File.OpenRead(this.StatePath)));
+		//	} catch (Exception ex) {
+		//		Logger.Error(this, ex, "Could not save application state");
+		//	}
+		//	return (null);
+		//}
+
+
+		//private void SaveState(object state) {
+		//	try {
+		//		Logger.Info(this, "Saving application state to " + this.StatePath + "...");
+		//		if (File.Exists(this.StatePath)) File.Delete(this.StatePath);
+		//		BinaryFormatter formatter = new BinaryFormatter();
+		//		formatter.Serialize(File.OpenWrite(this.StatePath), state);
+		//	} catch (Exception ex) {
+		//		Logger.Error(this, ex, "Could not save application state");
+		//	}
+
+		//}
+
+		//public string StatePath {
+		//	get { return (Path.Combine(this._deployment.BinFolder, "appstate.bin")); }
+		//}
 
 	}
 

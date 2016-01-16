@@ -64,10 +64,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contract\IBootstrapper.cs" />
+    <Compile Include="Contract\IHost.cs" />
     <Compile Include="Hosting\AppDomainApplicationHost.cs" />
     <Compile Include="Hosting\AppDomainHostingModel.cs" />
-    <Compile Include="Hosting\HostingModel.cs" />
-    <Compile Include="Infrastructure\IPHelper.cs" />
+    <Compile Include="Hosting\IHostingModel.cs" />
     <Compile Include="Hosting\ProcessApplicationHost.cs" />
     <Compile Include="Hosting\ProcessHostingModel.cs" />
     <Compile Include="Infrastructure\ReflectionHelper.cs" />
@@ -76,7 +76,7 @@
     <Compile Include="Persistence\FileSystemRepositoryConfiguration.cs" />
     <Compile Include="Persistence\IApplicationRepository.cs" />
     <Compile Include="Persistence\FileSystemRepository.cs" />
-    <Compile Include="Hosting\ApplicationHost.cs" />
+    <Compile Include="Hosting\IApplicationHost.cs" />
     <Compile Include="Server\AppServerException.cs" />
     <Compile Include="Persistence\IApplicationRepositoryConfiguration.cs" />
     <Compile Include="Server\ArchivePackage.cs" />
@@ -91,7 +91,7 @@
     <Compile Include="Server\Manifest.cs" />
     <Compile Include="Server\PackageContent.cs" />
     <Compile Include="Server\BytePackage.cs" />
-    <Compile Include="Contract\Context.cs" />
+    <Compile Include="Contract\ServerContext.cs" />
     <Compile Include="Server\FilePackage.cs" />
     <Compile Include="Server\Server.cs" />
     <Compile Include="Contract\Message.cs" />
@@ -104,15 +104,11 @@
     <Compile Include="Infrastructure\RemoteObjectFactory.cs" />
     <Compile Include="Watchers\ServerWatcher.cs" />
     <Compile Include="Infrastructure\SponsorshipManager.cs" />
-    <Compile Include="Server\Type.cs" />
+    <Compile Include="Contract\Type.cs" />
     <Compile Include="Watchers\Watcher.cs" />
     <Compile Include="Watchers\Update.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Host\Host.csproj">
-      <Project>{745cf4f9-50cc-4eb1-8f42-d86bc74e3e62}</Project>
-      <Name>Host</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Utiltities\Utilities.csproj">
       <Project>{F3576572-2E76-45C5-A73C-AC10519BF07F}</Project>
       <Name>Utilities</Name>

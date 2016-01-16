@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 
-namespace Core.Infrastructure {
+namespace Utilities {
 
-	internal class IPHelper {
+	public class IPHelper {
 
 		public static int FindFreePort(int lowerBound, int upperBound) {
 			int[] portsInUse = FindPortsInUse().ToArray();

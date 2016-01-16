@@ -18,9 +18,9 @@ namespace Core {
 		private readonly SameThreadTaskScheduler _scheduler;
 		private readonly IApplicationRepository _repository;
 		private bool _disposed;
-		private readonly HostingModel _hostingModel;
+		private readonly IHostingModel _hostingModel;
 		
-		internal Server(HostingModel hostingModel, string appFolder, string tempFolder) {
+		internal Server(IHostingModel hostingModel, string appFolder, string tempFolder) {
 			this._hostingModel = hostingModel;
 			this._repository = new FileSystemRepository(new FileSystemRepositoryConfiguration(appFolder, tempFolder));
 			this._scheduler = new SameThreadTaskScheduler("AppServer");
@@ -43,7 +43,7 @@ namespace Core {
 				Logger.Info(this, "Application " + application.Name + " latest package = " + latest.Version.ToString(4));
 				Application app = this.CreateApplication(application.Name);
 				app.LoadFrom(latest.Directory);
-				app.Init(new Context(app, this));
+				app.Init(new ServerContext(app, this));
 				applications.Add(app);
 			}
 			return (applications);
@@ -74,7 +74,7 @@ namespace Core {
 		public Application CreateApplication(string name) {
 			if(this._applications.Any(a => a.Name == name)) throw new Exception("Application '" + name + "' is already registered");
 			Application application = new Application(name, this, this._repository, this._hostingModel);
-			application.Init(new Context(application, this));
+			application.Init(new ServerContext(application, this));
 			this._applications.Add(application);
 			Logger.Info(this, "Registered application " + name);
 			return (application);

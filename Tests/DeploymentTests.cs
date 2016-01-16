@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Threading;
+﻿using System.Threading;
 using Core;
 using Core.Contract;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -13,7 +12,7 @@ namespace Tests {
 			throw new System.NotImplementedException();
 		}
 
-		public void Initialize(Context context) {
+		public void Initialize(ServerContext context) {
 			throw new System.NotImplementedException();
 		}
 
@@ -25,7 +24,7 @@ namespace Tests {
 
 	public class TestUpdater : Updater {
 
-		public override void Run(Context context) {
+		public override void Run(ServerContext context) {
 			throw new System.NotImplementedException();
 		}
 

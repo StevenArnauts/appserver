@@ -1,4 +1,4 @@
-namespace Host {
+namespace Core.ProcessHost {
 
 	public class ServerConfiguration {
 

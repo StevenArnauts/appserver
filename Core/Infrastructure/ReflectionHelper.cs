@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Core.Contract;
 using Utilities;
 
 namespace Core.Infrastructure {
@@ -19,13 +18,13 @@ namespace Core.Infrastructure {
 			return appDomain;
 		}
 
-		public static TInstance CreateSponsoredInstance<TInstance>(AppDomain appDomain, Type type, params object[] parameters) where TInstance : MarshalByRefObject {
+		public static TInstance CreateSponsoredInstance<TInstance>(AppDomain appDomain, Contract.Type type, params object[] parameters) where TInstance : MarshalByRefObject {
 			TInstance instance = CreateInstance<TInstance>(appDomain, type, parameters);
 			RemoteObjectFactory.Sponsor(instance);
 			return (instance);
 		}
 
-		public static TInstance CreateInstance<TInstance>(AppDomain appDomain, Type type, params object[] parameters) where TInstance : class {
+		public static TInstance CreateInstance<TInstance>(AppDomain appDomain, Contract.Type type, params object[] parameters) where TInstance : class {
 			string assemblyFile = type.Assembly.File;
 			if (assemblyFile == null) throw new ArgumentException("Type must include assembly location");
 			string assemblyName = type.Assembly.Name;

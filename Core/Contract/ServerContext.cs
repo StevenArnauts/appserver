@@ -7,14 +7,13 @@ namespace Core.Contract {
 	/// <summary>
 	/// Mechanism to allow the host application to receive messages from the guest applications.
 	/// This object always lives in the app domain of the server.
-	/// TODO [SAR] make this serializable?
 	/// </summary>
-	public class Context : MarshalByRefObject {
+	public class ServerContext : MarshalByRefObject {
 
 		private readonly Application _application;
 		private readonly Server _server;
 
-		public Context(Application application, Server server) {
+		public ServerContext(Application application, Server server) {
 			this._server = server;
 			this._application = application;
 			Logger.Info(this, "Context created in app domain " + AppDomain.CurrentDomain.FriendlyName);

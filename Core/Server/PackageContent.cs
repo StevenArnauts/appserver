@@ -13,21 +13,21 @@ namespace Core {
 	public class PackageContent {
 
 		public PackageContent() {
-			this.Bootstrappers = new List<Type>();
-			this.Updaters = new List<Type>();
+			this.Bootstrappers = new List<Contract.Type>();
+			this.Updaters = new List<Contract.Type>();
 		}
 
 		[XmlElement(ElementName = "manifest")]
 		public Manifest Manifest { get; set; }
 
 		[XmlArray(ElementName = "bootstappers")]
-		public List<Type> Bootstrappers { get; set; }
+		public List<Contract.Type> Bootstrappers { get; set; }
 
 		[XmlArray(ElementName = "updaters")]
-		public List<Type> Updaters { get; set; }
+		public List<Contract.Type> Updaters { get; set; }
 
 		[XmlIgnore]
-		public Type Bootstrapper {
+		public Contract.Type Bootstrapper {
 			get {
 				if(!this.Bootstrappers.Any()) throw new InvalidOperationException("Package contains no bootstrapper");
 				if(this.Bootstrappers.Count > 1) throw new InvalidOperationException("Package contains " + this.Bootstrappers.Count + " bootstrapper(s)");

@@ -52,6 +52,10 @@
       <Project>{6aeedab9-0b11-4189-804c-fc19cebd187d}</Project>
       <Name>Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Host\Core.ProcessHost.csproj">
+      <Project>{745cf4f9-50cc-4eb1-8f42-d86bc74e3e62}</Project>
+      <Name>Core.ProcessHost</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Utiltities\Utilities.csproj">
       <Project>{F3576572-2E76-45C5-A73C-AC10519BF07F}</Project>
       <Name>Utilities</Name>

@@ -9,12 +9,12 @@ namespace Briljant {
 
 	public class Bootstrapper : IBootstrapper {
 
-		private Context _context;
+		private ServerContext _context;
 
-		public void Initialize(Context context) {
+		public void Initialize(ServerContext context) {
 			Logger.Initialize("log4net.config");
 			this._context = context;
-			Logger.Info(this, "Initialized in jokke app domain " + AppDomain.CurrentDomain.FriendlyName + ", my version is " + this.GetType().Assembly.GetName().Version);
+			Logger.Info(this, "Initialized in app domain " + AppDomain.CurrentDomain.FriendlyName + ", my version is " + this.GetType().Assembly.GetName().Version);
 		}
 
 		public void Run(CancellationToken token) {

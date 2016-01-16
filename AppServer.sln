@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{3F8AEEFF-3F28-4187-AAAF-B0ED131F64B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Host", "Host\Host.csproj", "{745CF4F9-50CC-4EB1-8F42-D86BC74E3E62}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.ProcessHost", "Host\Core.ProcessHost.csproj", "{745CF4F9-50CC-4EB1-8F42-D86BC74E3E62}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

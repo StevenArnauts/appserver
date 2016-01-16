@@ -7,7 +7,7 @@ namespace Alure {
 
 	public class ConfigUpdate : Updater {
 
-		public override void Run(Context context) {
+		public override void Run(ServerContext context) {
 			Logger.Info(this, "Updating...");
 			string configFilePath = context.ConfigFilePath;
 			string transformationFilePath = Path.Combine(context.CurrentPath, "add_user_sex.xdt");

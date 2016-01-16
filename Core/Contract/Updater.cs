@@ -8,7 +8,7 @@ namespace Core {
 	/// </summary>
 	public abstract class Updater : MarshalByRefObject {
 
-		public abstract void Run(Context context);
+		public abstract void Run(ServerContext context);
 
 	}
 

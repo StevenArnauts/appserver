@@ -1,22 +1,26 @@
 ﻿using System;
+using System.Collections;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
+using System.Runtime.Serialization.Formatters;
+using Utilities;
 
-namespace Host {
+namespace Core.ProcessHost {
 
 	public class Program {
 
 		private static void Main(string[] args) {
 			try {
-				Logger.Log("Starting...");
+				Logger.Initialize("log4net.config");
+				Logger.Info("Starting in directory " + AppDomain.CurrentDomain.BaseDirectory + "...");
 				ServerConfiguration configuration = ParseArguments(args);
 				StartServer(configuration);
-				Logger.Log("Started");
+				Logger.Info("Started");
 			} catch (Exception ex) {
-				Logger.Log("Startup failed", ex);
+				Logger.Error("Startup failed", ex);
 			}
-			Logger.Log("Press <ENTER> to exit...");
+			Logger.Info("Press <ENTER> to exit...");
 			Console.ReadLine();
 		}
 
@@ -30,11 +34,17 @@ namespace Host {
 		}
 
 		private static void StartServer(ServerConfiguration config) {
-			TcpChannel channel = new TcpChannel(config.Port);
-			ChannelServices.RegisterChannel(channel, false);
+			//BinaryClientFormatterSinkProvider clientProvider = new BinaryClientFormatterSinkProvider();
+			//BinaryServerFormatterSinkProvider serverProvider = new BinaryServerFormatterSinkProvider { TypeFilterLevel = TypeFilterLevel.Full };
+			SoapClientFormatterSinkProvider clientProvider = new SoapClientFormatterSinkProvider();
+			SoapServerFormatterSinkProvider serverProvider = new SoapServerFormatterSinkProvider();
+			IDictionary props = new Hashtable();
+			props["port"] = config.Port;
+			TcpChannel chan = new TcpChannel(props, clientProvider, serverProvider);
+			ChannelServices.RegisterChannel(chan, false);
 			RemotingConfiguration.RegisterWellKnownServiceType(typeof(Server), Server.OBJECT_URI, WellKnownObjectMode.Singleton);
 			foreach (var o in RemotingConfiguration.GetRegisteredWellKnownServiceTypes()) {
-				Logger.Log(o.TypeName + " is ready for requests on tcp://localhost:" + config.Port + o.ObjectUri);
+				Logger.Info(o.TypeName + " is listening on tcp://localhost:" + config.Port + "/" + o.ObjectUri);
 			}
 			
 		}

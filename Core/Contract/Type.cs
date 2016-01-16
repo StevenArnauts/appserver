@@ -2,7 +2,7 @@
 using System.Xml.Serialization;
 using Utilities;
 
-namespace Core {
+namespace Core.Contract {
 
 	[XmlType(TypeName = "type", Namespace = Serialization.NAMESPACE)]
 	[Serializable]
