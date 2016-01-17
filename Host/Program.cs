@@ -34,10 +34,8 @@ namespace Core.ProcessHost {
 		}
 
 		private static void StartServer(ServerConfiguration config) {
-			//BinaryClientFormatterSinkProvider clientProvider = new BinaryClientFormatterSinkProvider();
-			//BinaryServerFormatterSinkProvider serverProvider = new BinaryServerFormatterSinkProvider { TypeFilterLevel = TypeFilterLevel.Full };
-			SoapClientFormatterSinkProvider clientProvider = new SoapClientFormatterSinkProvider();
-			SoapServerFormatterSinkProvider serverProvider = new SoapServerFormatterSinkProvider();
+			BinaryClientFormatterSinkProvider clientProvider = new BinaryClientFormatterSinkProvider();
+			BinaryServerFormatterSinkProvider serverProvider = new BinaryServerFormatterSinkProvider { TypeFilterLevel = TypeFilterLevel.Full };
 			IDictionary props = new Hashtable();
 			props["port"] = config.Port;
 			TcpChannel chan = new TcpChannel(props, clientProvider, serverProvider);

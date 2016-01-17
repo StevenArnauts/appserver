@@ -20,6 +20,10 @@ namespace Utilities {
 			return tcpConnInfoArray.Select(tcpi => (tcpi.LocalEndPoint.Port));
 		}
 
+		public static bool IsPortFree(int port) {
+			return (!FindPortsInUse().Contains(port));
+		}
+
 	}
 
 }

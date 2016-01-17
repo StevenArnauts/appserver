@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Runtime.Serialization.Formatters;
@@ -9,14 +10,17 @@ using Utilities;
 namespace Core.ProcessHost {
 
 	public class ProcessHostingModel : IHostingModel {
+		
+		private static readonly PortManager portManager = new PortManager(8000, 9000);
 
 		static ProcessHostingModel() {
 			KillOrphanedHostProcesses();
-			SetupRemoting();
+			SetupRemoting(portManager.GetNextFreePort());
 		}
 
 		public IApplicationHost Create(string binFolder, string assembly) {
-			ProcessApplicationHost host = new ProcessApplicationHost(binFolder);
+			int port = portManager.GetNextFreePort();
+			ProcessApplicationHost host = new ProcessApplicationHost(binFolder, port);
 			Logger.Info("Created new " + host.GetType().FullName);
 			return (host);
 		}
@@ -31,15 +35,10 @@ namespace Core.ProcessHost {
 			}
 		}
 
-		private static void SetupRemoting() {
-			// BinaryClientFormatterSinkProvider clientProvider = new BinaryClientFormatterSinkProvider();
-			// BinaryServerFormatterSinkProvider serverProvider = new BinaryServerFormatterSinkProvider { TypeFilterLevel = TypeFilterLevel.Full };
-
-			SoapClientFormatterSinkProvider clientProvider = new SoapClientFormatterSinkProvider();
-			SoapServerFormatterSinkProvider serverProvider = new SoapServerFormatterSinkProvider();
-
+		private static void SetupRemoting(int port) {
+			BinaryClientFormatterSinkProvider clientProvider = new BinaryClientFormatterSinkProvider();
+			BinaryServerFormatterSinkProvider serverProvider = new BinaryServerFormatterSinkProvider { TypeFilterLevel = TypeFilterLevel.Full };
 			IDictionary props = new Hashtable();
-			int port = IPHelper.FindFreePort(8000, 8500);
 			props["port"] = port;
 			Logger.Info("Initializing on port " + port + "...");
 			TcpChannel chan = new TcpChannel(props, clientProvider, serverProvider);

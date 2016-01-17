@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Logger.cs" />
+    <Compile Include="PortManager.cs" />
     <Compile Include="ProcessApplicationHost.cs" />
     <Compile Include="ProcessHostingModel.cs" />
     <Compile Include="Program.cs" />

@@ -140,7 +140,6 @@ namespace Core {
 					Logger.Info(this, "Starting...");
 					if (this._applicationHost == null) throw new Exception("Bootstrapper not set");
 					this._applicationHost.Initialize(this._context, this._deployment.PackageContent.Bootstrapper);
-					Thread.Sleep(TimeSpan.FromSeconds(1));
 					this._applicationHost.Start();
 					Logger.Info(this, "Started");
 				}

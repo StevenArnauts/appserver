@@ -13,9 +13,9 @@ namespace Core.ProcessHost {
 		private Process _hostProcess;
 		private string _url;
 
-		public ProcessApplicationHost(string binFolder) {
+		public ProcessApplicationHost(string binFolder, int port) {
 			this._binFolder = binFolder;
-			this.LaunchHost();
+			this.LaunchHost(port);
 		}
 
 		private IHost Connection {
@@ -71,7 +71,7 @@ namespace Core.ProcessHost {
 			this.Destroy();
 		}
 
-		private void LaunchHost() {
+		private void LaunchHost(int port) {
 
 			// find the apphost.exe and copy it to the target location, overwrite if needed so we have the correct version!
 			string assemblyFile = Path.GetFileName(new Uri(typeof (Server).Assembly.CodeBase).LocalPath);
@@ -80,9 +80,6 @@ namespace Core.ProcessHost {
 			File.Copy(source, target, true);
 			Logger.Info("Copied " + source + " to " + target);
 
-			// find a free port for the host to use
-			int port = IPHelper.FindFreePort(8500, 9000);
-			if (port < 0) throw new AppServerException("Unable to find a free port for the application hosting process");
 			this._url = "tcp://localhost:" + port + "/" + Server.OBJECT_URI;
 
 			// now start it as a new process
