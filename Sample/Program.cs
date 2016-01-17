@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using Briljant;
 using Core;
 using Core.ProcessHost;
 using Utilities;
@@ -16,31 +16,28 @@ namespace Sample {
 				Logger.Info(typeof(Program), "Started");
 
 				Server server = ServerFactory.Create(new ProcessHostingModel(), @".\apps", @".\temp");
-				IEnumerable<Application> applications = server.Load();
-				foreach (Application application in applications) {
-					application.Start();
-				}
+				server.Load();
 
 				Application briljant;
 				if (!server.TryGetApplication("Briljant", out briljant)) {
                     briljant = server.CreateApplication("Briljant");
 					briljant.Deploy(FilePackage.Open(@"..\..\Briljant\briljant.zip")).Wait();
-					briljant.Start();
 				}
+				briljant.Start(Serializer.Serialize(new BriljantState { Path = @"C:\Kluwer\Briljant\Admin\admin.exe", Version = 389 }));
 
 				Application alure;
 				if(!server.TryGetApplication("Alure", out alure)) {
 					alure = server.CreateApplication("Alure");
-					alure.Deploy(FilePackage.Open(@"..\..\Alure\alure.zip"));
-					alure.Start();
+					alure.Deploy(FilePackage.Open(@"..\..\Alure\alure.zip")).Wait();
 				}
+				alure.Start();
 
 				Application cloudbox;
 				if(!server.TryGetApplication("Cloudbox", out cloudbox)) {
 					cloudbox = server.CreateApplication("Cloudbox");
-					cloudbox.Deploy(FilePackage.Open(@"..\..\Cloudbox\cloudbox.zip"));
-					cloudbox.Start();
+					cloudbox.Deploy(FilePackage.Open(@"..\..\Cloudbox\cloudbox.zip")).Wait();
 				}
+				cloudbox.Start();
 
 				PackageWatcher alureWatcher = new PackageWatcher(@"..\..\Alure", "alure.zip", alure);
 				alureWatcher.Start();

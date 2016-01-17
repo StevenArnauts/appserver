@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Runtime.Serialization.Formatters;
@@ -15,12 +14,11 @@ namespace Core.ProcessHost {
 
 		static ProcessHostingModel() {
 			KillOrphanedHostProcesses();
-			SetupRemoting(portManager.GetNextFreePort());
+			SetupRemoting(portManager.ClaimNext());
 		}
 
 		public IApplicationHost Create(string binFolder, string assembly) {
-			int port = portManager.GetNextFreePort();
-			ProcessApplicationHost host = new ProcessApplicationHost(binFolder, port);
+			ProcessApplicationHost host = new ProcessApplicationHost(binFolder, portManager);
 			Logger.Info("Created new " + host.GetType().FullName);
 			return (host);
 		}

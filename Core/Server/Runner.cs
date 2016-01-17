@@ -21,11 +21,11 @@ namespace Core {
 		/// <summary>
 		/// Creates the <see cref="Contract.IBootstrapper"/> instance.
 		/// </summary>
-		public void Initialize(ServerContext context, Contract.Type bootstrapperType) {
+		public void Initialize(ServerContext context, Contract.Type bootstrapperType, string[] args) {
 			Logger.Initialize("log4net.config");
 			Logger.Info(this, "Initializing " + bootstrapperType.FullName + "...");
 			this._bootstrapper = ReflectionHelper.CreateInstance<IBootstrapper>(AppDomain.CurrentDomain, bootstrapperType);
-			this._bootstrapper.Initialize(context);
+			this._bootstrapper.Initialize(context, args);
 			Logger.Info(this, "Initialized " + bootstrapperType.FullName);
 		}
 

@@ -11,10 +11,11 @@ namespace Cloudbox {
 
 		private ServerContext _context;
 
-		public void Initialize(ServerContext context) {
+		public void Initialize(ServerContext context, string[] args) {
 			Logger.Initialize("log4net.config");
 			this._context = context;
 			Logger.Info(this, "Initialized in app domain " + AppDomain.CurrentDomain.FriendlyName + ", my version is " + this.GetType().Assembly.GetName().Version);
+			Logger.Info(this, "args = { " + (args != null ? args.Print(", ") : "") + "}");
 		}
 
 		public void Run(CancellationToken token) {

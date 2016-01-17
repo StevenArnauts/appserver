@@ -12,10 +12,14 @@ namespace Core.ProcessHost {
 		private readonly string _binFolder;
 		private Process _hostProcess;
 		private string _url;
+		private readonly int _port;
+		private readonly PortManager _portManager;
 
-		public ProcessApplicationHost(string binFolder, int port) {
+		public ProcessApplicationHost(string binFolder, PortManager portManager) {
+			this._portManager = portManager;
+			this._port = portManager.ClaimNext();
 			this._binFolder = binFolder;
-			this.LaunchHost(port);
+			this.LaunchHost();
 		}
 
 		private IHost Connection {
@@ -26,9 +30,9 @@ namespace Core.ProcessHost {
 			}
 		}
 
-		public void Initialize(ServerContext context, Type bootstrapper) {
+		public void Initialize(ServerContext context, Type bootstrapper, string[] args) {
 			try {
-				this.Connection.Initialize(bootstrapper, context);
+				this.Connection.Initialize(bootstrapper, context, args);
 			} catch (Exception ex) {
 				Logger.Error(ex, "Failed to initialize host process");
 			}
@@ -57,6 +61,7 @@ namespace Core.ProcessHost {
 		public void Destroy() {
 			Logger.Info("Destroying host process...");
 			try {
+				this._portManager.ReleasePort(this._port);
 				this._hostProcess.Kill();
 				Logger.Info("Waiting for host process to exit...");
 				this._hostProcess.WaitForExit(10000);
@@ -71,7 +76,7 @@ namespace Core.ProcessHost {
 			this.Destroy();
 		}
 
-		private void LaunchHost(int port) {
+		private void LaunchHost() {
 
 			// find the apphost.exe and copy it to the target location, overwrite if needed so we have the correct version!
 			string assemblyFile = Path.GetFileName(new Uri(typeof (Server).Assembly.CodeBase).LocalPath);
@@ -80,12 +85,12 @@ namespace Core.ProcessHost {
 			File.Copy(source, target, true);
 			Logger.Info("Copied " + source + " to " + target);
 
-			this._url = "tcp://localhost:" + port + "/" + Server.OBJECT_URI;
+			this._url = "tcp://localhost:" + this._port + "/" + Server.OBJECT_URI;
 
 			// now start it as a new process
-			this._hostProcess = new Process { EnableRaisingEvents = true, StartInfo = new ProcessStartInfo { Arguments = port.ToString(), CreateNoWindow = false, FileName = target } };
+			this._hostProcess = new Process { EnableRaisingEvents = true, StartInfo = new ProcessStartInfo { Arguments = this._port.ToString(), CreateNoWindow = false, FileName = target } };
 			this._hostProcess.Start();
-			Logger.Info("Started new application host process on port " + port);
+			Logger.Info("Started new application host process on port " + this._port);
 		}
 
 	}

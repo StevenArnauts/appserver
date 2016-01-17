@@ -16,22 +16,28 @@ namespace Core.ProcessHost {
 			this._lower = lower;
 		}
 
-		public int GetNextFreePort() {
+		public int ClaimNext() {
 			lock (this._ports) {
 				if(!this._ports.Any()) {
 					this._ports.Add(IPHelper.FindFreePort(this._lower, this._upper));
 					if(this._ports[0] < 0) throw new Exception("Unable to find a free port between " + this._lower + " and " + this._upper);
 					return (this._ports[0]);
 				} 
-				int nextPort = this._ports.Last();
+				int nextPort = this._lower;
 				while(nextPort < this._upper) {
-					nextPort = nextPort + 1;
-					if (IPHelper.IsPortFree(nextPort)) {
+					if (!this._ports.Contains(nextPort) && IPHelper.IsPortFree(nextPort)) {
 						this._ports.Add(nextPort);
 						return (nextPort);
 					}
+					nextPort = nextPort + 1;
 				}
 				throw new Exception("Unable to find a free port between 8500 and 9000");
+			}
+		}
+
+		public void ReleasePort(int port) {
+			lock (this._ports) {
+				this._ports.Remove(port);
 			}
 		}
 

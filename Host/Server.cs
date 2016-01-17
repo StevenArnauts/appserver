@@ -22,10 +22,10 @@ namespace Core.ProcessHost {
 
 		public override object InitializeLifetimeService() { return (null); }
 
-		public void Initialize(Contract.Type bootstrapper, ServerContext context) {
+		public void Initialize(Contract.Type bootstrapper, ServerContext context, string[] args) {
 			Logger.Info("Initializing bootstrapper " + bootstrapper.AssemblyQualifiedName + "...");
 			this._bootstrapper = this.CreateInstance(bootstrapper.AssemblyQualifiedName);
-			SymbolExtensions.GetMethodInfo<IBootstrapper>(b => b.Initialize(null)).Invoke(this._bootstrapper, new object[] {context});
+			SymbolExtensions.GetMethodInfo<IBootstrapper>(b => b.Initialize(null, null)).Invoke(this._bootstrapper, new object[] {context, args});
 			Logger.Info("Initialized");
 		}
 

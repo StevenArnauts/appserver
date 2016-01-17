@@ -16,8 +16,8 @@ namespace Core {
 			this._runner = ReflectionHelper.CreateInstance<Runner>(this._appDomain, Type.FromType(typeof(Runner)));
 		}
 
-		public void Initialize(ServerContext context, Type bootstrapper) {
-			this._runner.Initialize(context, bootstrapper);
+		public void Initialize(ServerContext context, Type bootstrapper, string[] args) {
+			this._runner.Initialize(context, bootstrapper, args);
 		}
 
 		public void Start() {

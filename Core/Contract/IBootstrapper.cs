@@ -5,7 +5,7 @@ namespace Core.Contract {
 
 	public interface IBootstrapper : IDisposable {
 
-		void Initialize(ServerContext context);
+		void Initialize(ServerContext context, string[] args);
 		void Run(CancellationToken token);
 
 	}

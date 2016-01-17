@@ -50,7 +50,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AlureCallback.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="FileTransformer.cs" />
     <Compile Include="ConfigUpdate.cs" />

@@ -12,7 +12,7 @@ namespace Tests {
 			throw new System.NotImplementedException();
 		}
 
-		public void Initialize(ServerContext context) {
+		public void Initialize(ServerContext context, string[] args) {
 			throw new System.NotImplementedException();
 		}
 

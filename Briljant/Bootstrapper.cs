@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Contract;
@@ -11,10 +12,15 @@ namespace Briljant {
 
 		private ServerContext _context;
 
-		public void Initialize(ServerContext context) {
+		public void Initialize(ServerContext context, string[] args) {
 			Logger.Initialize("log4net.config");
 			this._context = context;
 			Logger.Info(this, "Initialized in app domain " + AppDomain.CurrentDomain.FriendlyName + ", my version is " + this.GetType().Assembly.GetName().Version);
+			Logger.Info(this, "args = { " + (args != null ? args.Print(", ") : "") + "}");
+			if (args != null && args.Any()) {
+				BriljantState state = Serializer.Deserialize<BriljantState>(args[0]);
+				Logger.Info(this, "Briljant version = " + state.Version + ", path = " + state.Path);
+			}
 		}
 
 		public void Run(CancellationToken token) {

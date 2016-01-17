@@ -17,9 +17,10 @@ namespace Alure {
 			Logger.Info(this, "Created");
 		}
 
-		public void Initialize(ServerContext context) {
+		public void Initialize(ServerContext context, string[] args) {
 			this._context = context;
 			Logger.Info(this, "Initialized in app domain " + AppDomain.CurrentDomain.FriendlyName + ", my version is " + this.GetType().Assembly.GetName().Version);
+			Logger.Info(this, "args = { " + (args != null ? args.Print(", ") : "") + "}");
 		}
 
 		public void Run(CancellationToken token) {

@@ -48,6 +48,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Briljant\Briljant.csproj">
+      <Project>{1fdc54e6-8842-4686-933f-d0e8a45b4d22}</Project>
+      <Name>Briljant</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{6aeedab9-0b11-4189-804c-fc19cebd187d}</Project>
       <Name>Core</Name>
